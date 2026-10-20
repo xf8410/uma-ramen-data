@@ -1,0 +1,17 @@
+{
+  "bins": 326,
+  "format_version": 1,
+  "input_dim": 754,
+  "policy_dim": 234,
+  "samples_total": 10164,
+  "samples_with_score": 10164,
+  "score_max": 74500.43619791667,
+  "score_mean": 64036.752962132574,
+  "score_min": 18479.318498883928,
+  "score_p50": 64215.263563368055,
+  "score_p90": 67261.42661830357,
+  "score_std": 2862.1815224188604,
+  "total_success_rollouts": 128551936,
+  "turn_max": 76,
+  "turn_min": 0
+}

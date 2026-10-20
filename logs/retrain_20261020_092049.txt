@@ -1,0 +1,107 @@
+==============================================================
+GBDT 重训运行日志   20261020_092049 UTC
+触发: https://github.com/xf8410/uma-ramen-data/actions/runs/39399702091
+管线: data754 分片 → md5校验 → convert754 → 合并 → GBDT 200树 d4 lr0.1
+==============================================================
+
+【数据】
+  prod_n4096      3057 样本  平均分 63772.1 ✓在历史区间内
+    summary.json: {
+  "bins": 96,
+  "format_version": 1,
+  "input_dim": 754,
+  "policy_dim": 234,
+  "samples_total": 3057,
+  "samples_with_score": 3057,
+  "score_max": 73075.42367951767,
+  "score_mean": 63772.104284573
+  r2roll         23526 样本  平均分 63867.2 ✓在历史区间内
+    summary.json: {
+  "bins": 755,
+  "format_version": 1,
+  "input_dim": 754,
+  "policy_dim": 234,
+  "samples_total": 23526,
+  "samples_with_score": 23526,
+  "score_max": 73122.84450954861,
+  "score_mean": 63867.203431
+  r3roll          9190 样本  平均分 63937.6 ✓在历史区间内
+    summary.json: {
+  "bins": 295,
+  "format_version": 1,
+  "input_dim": 754,
+  "policy_dim": 234,
+  "samples_total": 9190,
+  "samples_with_score": 9190,
+  "score_max": 75490.03548177083,
+  "score_mean": 63937.57997799
+  r4roll         10164 样本  平均分 64036.8 ✓在历史区间内
+    summary.json: {
+  "bins": 326,
+  "format_version": 1,
+  "input_dim": 754,
+  "policy_dim": 234,
+  "samples_total": 10164,
+  "samples_with_score": 10164,
+  "score_max": 74500.43619791667,
+  "score_mean": 64036.752962
+  r4roll2         9840 样本  平均分 64033.7 ✓在历史区间内
+    summary.json: {
+  "bins": 316,
+  "format_version": 1,
+  "input_dim": 754,
+  "policy_dim": 234,
+  "samples_total": 9840,
+  "samples_with_score": 9840,
+  "score_max": 73015.4873046875,
+  "score_mean": 64033.720403147
+  合计             55777 样本  平均分 63933.9
+
+【合并】features.npy (55777, 754) float32  → 训练输入就绪
+
+【训练】gbdt_export.py 原始输出：
+样本 55777 特征 754 分数 [12969,75490] 均值 63934
+训练 44621 / 测试 11156
+GBDT(200,d4) MAE=713  R²=+0.8823
+全量重训后导出 training_data_npy/gbdt_model.json (trees=200, init=63933.9)
+导出无损校验(前8条): max|diff|=0.00e+00
+
+【产物】
+  weights/gbdt_model.json  271KB  md5=d81d8e62f736bde06fe9f41af01d54de
+  data/prod_n4096/features.npy  9003KB  md5=098260d9e944a7c04820fe178a18c5e8
+  data/prod_n4096/legal_mask.npy  2794KB  md5=b6cfed4cb48d6182f5392a20cc2948ab
+  data/prod_n4096/meta.jsonl  413KB  md5=e5608a0b99e2e572195ef98b40ca0834
+  data/prod_n4096/score_mean.npy  2794KB  md5=b21c9d70a291c4111026e521a6816ce0
+  data/prod_n4096/score_n.npy  2794KB  md5=cb3af8d0d828edbd576f80ad28fd72c4
+  data/prod_n4096/summary.json  0KB  md5=fb73f5df14dd94081bae28cf44bae601
+  data/r2roll/features.npy  69291KB  md5=148c388994a3504cb70e764cb694f2c3
+  data/r2roll/legal_mask.npy  21504KB  md5=2089a59ac471b022eb02d69edc340d75
+  data/r2roll/meta.jsonl  3169KB  md5=55b0dd30faa9b2308e4a7c545825b298
+  data/r2roll/score_mean.npy  21504KB  md5=65428b17c823e85e34f9c8d0b7ae4bfa
+  data/r2roll/score_n.npy  21504KB  md5=fd190c6a53689891df5b45bd512004de
+  data/r2roll/summary.json  0KB  md5=54a3da3a67474907966c6625e1758d4b
+  data/r3roll/features.npy  27067KB  md5=682097dc2c5ad916785c05930bb3e477
+  data/r3roll/legal_mask.npy  8400KB  md5=c028291de8b8e22910771f8a9f2b07e9
+  data/r3roll/meta.jsonl  1238KB  md5=ab0e4be47b522f9e448548d4fcce6249
+  data/r3roll/score_mean.npy  8400KB  md5=7acdd4d120178c5ff99244cbd9889b8a
+  data/r3roll/score_n.npy  8400KB  md5=f3457ba772ea847d649bf98e1614f4ab
+  data/r3roll/summary.json  0KB  md5=f998242eb58906e02ba8a2fb0fdcd030
+  data/r4roll/features.npy  29936KB  md5=d783673cbff036566aedfaf45c737a66
+  data/r4roll/legal_mask.npy  9290KB  md5=edb78cf949e475d914826f35879245c2
+  data/r4roll/meta.jsonl  1369KB  md5=67d0ba64134bdb4bf8f331e34bb3db0e
+  data/r4roll/score_mean.npy  9290KB  md5=0b639f2f9d6fbf899ad5b631aad986b2
+  data/r4roll/score_n.npy  9290KB  md5=892a1c93be0500fb137754d2c2ad65d8
+  data/r4roll/summary.json  0KB  md5=c9212bbbfbb95001163b7914f564bf20
+  data/r4roll2/features.npy  28982KB  md5=93007bba613e2a356a83bf77c1e74725
+  data/r4roll2/legal_mask.npy  8994KB  md5=c004b7fae58791e7cb1c648e89a6af9f
+  data/r4roll2/meta.jsonl  1326KB  md5=19f4cf4e6a8bc287159bcd989ba8a6f4
+  data/r4roll2/score_mean.npy  8994KB  md5=e88f953e99fb08c8663bbb79d65f93bf
+  data/r4roll2/score_n.npy  8994KB  md5=acf740d5e940c54c489d48d3270afd6f
+  data/r4roll2/summary.json  0KB  md5=227139e064ba86e69d78483b5f727953
+
+【结论】
+  MAE=713（历史参考 711）  R²=+0.8823（历史参考 0.86）
+  判读: 与首训一致，链路复现 ✓
+  样本合计 55777（历史 55777）  全量平均分 63933.9
+==============================================================
+完: 2026-10-20 09:24:57 UTC
