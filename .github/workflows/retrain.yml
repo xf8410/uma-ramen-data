@@ -1,0 +1,70 @@
+name: retrain
+
+on:
+  workflow_dispatch:
+    inputs:
+      datasets:
+        description: "数据集（空格分隔）"
+        default: "prod_n4096 r2roll r3roll r4roll r4roll2"
+  push:
+    paths: ["scripts/**", ".github/workflows/retrain.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout umaai-rs（gbdt-leaf：convert754 + gbdt_export.py）
+        uses: actions/checkout@v4
+        with:
+          repository: xf8410/umaai-rs
+          ref: feat/gbdt-leaf
+          path: umaai-rs
+
+      - name: Checkout data754 原始数据（1.58GB 分片包）
+        uses: actions/checkout@v4
+        with:
+          repository: xf8410/umaai-rs
+          ref: data754
+          path: data754-raw
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            umaai-rs/target
+          key: retrain-cargo-${{ hashFiles('umaai-rs/Cargo.lock') }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install numpy scikit-learn
+
+      - name: Build convert754
+        run: cargo build --release -p umasim --bin convert754
+        working-directory: umaai-rs
+
+      - name: Retrain pipeline（拼装→md5校验→转换→合并→训练）
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          bash scripts/retrain.sh data754-raw umaai-rs \
+            "${{ github.event.inputs.datasets || 'prod_n4096 r2roll r3roll r4roll r4roll2' }}" \
+            "$RUN_URL"
+
+      - name: Commit data + weights + txt 日志进仓
+        run: |
+          git config user.name "retrain-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data weights logs
+          git commit -m "retrain: 数据+权重+txt日志自动入仓 (run ${{ github.run_number }})" || echo "无变化可提交"
+          git push
