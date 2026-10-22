@@ -1,6 +1,6 @@
 # 拉面杯训练数据仓（uma-ramen-data）
 
-**一句话：data754 五数据集的转换矩阵（5.6 万局 × 754 维）+ GBDT/NN 权重 + 每次 CI 的 txt 运行日志——数据不落云盘、不落 /tmp，全进仓库。**
+**一句话：data754 五数据集的转换矩阵（5.6 万决策点样本 × 754 维）+ GBDT/NN 权重 + 每次 CI 的 txt 运行日志——数据不落云盘、不落 /tmp，全进仓库。**
 
 ## 为什么单开这个仓
 
@@ -11,17 +11,33 @@
 ## 目录结构
 
 ```
-data/            # 转换矩阵（convert754 产出，按数据集分目录）
-  prod_n4096/    #   features.npy [N,754] f32 + legal_mask/score_mean/score_n + meta.jsonl + summary.json
+data/            # 转换矩阵（convert754 产出，按数据集分目录；单位=决策点样本）
+  prod_n4096/    #   3057 样本（小批量校准集）features.npy [N,754] f32 + legal_mask/score_mean/score_n + meta.jsonl + summary.json
   r2roll/        #   23526 样本（主力批）
-  r3roll/        #   ~9186 样本
-  r4roll/        #   ~1.05 万样本
-  r4roll2/       #   ~1.14 万样本
+  r3roll/        #   9190 样本
+  r4roll/        #   10164 样本
+  r4roll2/       #   9840 样本
 weights/         # 模型权重（gbdt_model.json 等，训练完自动入仓）
 logs/            # 每次运行一份 txt：局数/平均分/训练指标/产物清单+md5
 ```
 
 原始数据（bincode 分片包，1.58GB）在 [xf8410/umaai-rs `data754` 分支](https://github.com/xf8410/umaai-rs/tree/data754)，本仓只存转换后的矩阵与产物。
+
+## 样本数口径（重要：5.6 万 = 决策点样本，不是 5.6 万局）
+
+convert754 对每局做稀疏采样（epsilon=0.15，一局通常只留 1 个关键决策点），
+所以「5.6 万」是**决策点样本数**，不是 5.6 万局——不要按「局」理解。五数据集合计：
+
+| 数据集 | 决策点样本 | 平均分 |
+|---|---|---|
+| prod_n4096（小批量校准集） | 3057 | 63772 |
+| r2roll（主力批） | 23526 | 63867 |
+| r3roll | 9190 | 63938 |
+| r4roll | 10164 | 64037 |
+| r4roll2 | 9840 | 64034 |
+| **合计** | **55777** | ~63830 |
+
+> 早期把「决策点样本」误写成「局」，会让 5.6 万显得偏少；实际是 5.6 万决策点、稀疏采样自海量 rollouts。
 
 ## CI 重训流水线（retrain.yml）
 
